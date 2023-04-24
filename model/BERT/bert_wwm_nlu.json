@@ -1,0 +1,53 @@
+
+{
+    "dataset_reader": {
+        "type": "mds_reader",
+        "model": "bert-base-chinese",
+        "tokenizer": {
+            "type": "pretrained_transformer",
+            "model_name": "hfl/chinese-bert-wwm"
+        },
+        "token_indexers": {
+            "bert": {
+                "type": "pretrained_transformer",
+                "model_name": "hfl/chinese-bert-wwm"
+            }
+        },
+        "max_tokens":512
+    },
+    "train_data_path": "../../data/train_human_annotation.txt",
+    "validation_data_path": "../../data/dev_human_annotation.txt",
+    "test_data_path": "../../data/test_human_annotation.txt",
+    "model": {
+        "type": "simple_classifier",
+        "embedder": {
+            "token_embedders": {
+                "bert": {
+                    "type":"pretrained_transformer",
+                    "model_name": "hfl/chinese-bert-wwm"
+                }
+            }
+        },
+        "encoder": {
+            "type": "bag_of_embeddings",
+            "embedding_dim": 768
+        }
+    },
+    "data_loader": {
+        "batch_size": 10,
+        "shuffle": true
+    },
+    "trainer": {
+        "optimizer": {
+            "type": "huggingface_adamw",
+            "lr": 0.00002
+        },
+        "validation_metric": "+f1_micro_sk_intent_slot",
+        "num_epochs": 30,
+        "patience": 10,
+        "grad_norm": 20.0,
+        "cuda_device": 0
+    },
+    "evaluate_on_test": true
+
+}
